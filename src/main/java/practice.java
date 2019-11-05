@@ -28,24 +28,28 @@ public class practice {
         int left;
         int right;
         int temp;
+        int min;
         boolean isChange = true;
         while (isChange) {
             isChange = false;
             for (int i = lastNotLeafIndex; i >= 0; i--) {
                 left = i * 2 + 1;
+                min = i;
                 if (array[i] > array[left]) {
-                    temp = array[i];
-                    array[i] = array[left];
-                    array[left] = temp;
+                    min = left;
                     isChange = true;
                 }
                 right = i * 2 + 2;
                 if (right < array.length && array[i] > array[right]) {
-                    temp = array[i];
-                    array[i] = array[right];
-                    array[right] = temp;
+                    min = right;
                     isChange = true;
                 }
+                if (min == i) {
+                    continue;
+                }
+                temp = array[i];
+                array[i] = array[min];
+                array[min] = temp;
             }
         }
     }
@@ -71,10 +75,10 @@ public class practice {
                 if (left <= length && array[left] < array[curIndex]) {
                     min = left;
                 }
-                if(right <= length && array[right] < array[min]){
+                if (right <= length && array[right] < array[min]) {
                     min = right;
                 }
-                if(min == curIndex){
+                if (min == curIndex) {
                     break;
                 }
                 temp = array[curIndex];
