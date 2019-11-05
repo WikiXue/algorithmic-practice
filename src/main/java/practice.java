@@ -57,19 +57,30 @@ public class practice {
         int left;
         int right;
         int temp;
+        int min;
         for (int i = 0; i < array.length; i++) {
             newArray[i] = array[0];
             array[0] = array[length];
             length--;
             curIndex = 0;
             left = 0;
-            while (left < length) {
+            while (left <= length) {
+                min = curIndex;
                 left = curIndex * 2 + 1;
                 right = curIndex * 2 + 2;
-                if (left < length && right < length) {
-
+                if (left <= length && array[left] < array[curIndex]) {
+                    min = left;
                 }
-
+                if(right <= length && array[right] < array[min]){
+                    min = right;
+                }
+                if(min == curIndex){
+                    break;
+                }
+                temp = array[curIndex];
+                array[curIndex] = array[min];
+                array[min] = temp;
+                curIndex = min;
             }
         }
         return newArray;
