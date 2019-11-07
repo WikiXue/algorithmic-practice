@@ -4,7 +4,7 @@
  * @author: WeijieXue
  * @create: 2019-11-04 22:39
  **/
-public class practice {
+public class Practice {
 
     public static void main(String[] args) {
 
