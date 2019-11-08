@@ -18,6 +18,18 @@ public class PracticeUtil {
         System.out.println();
     }
 
+    public static void printArray(int[] array, int length) {
+        if (array == null) {
+            System.out.println("null");
+            return;
+        }
+        for (int i = 0; i < length; i++) {
+            System.out.print(array[i]);
+            System.out.print(" ");
+        }
+        System.out.println();
+    }
+
     public static void printTree(int[] array) {
         if (array == null) {
             System.out.println("null");
@@ -27,11 +39,29 @@ public class PracticeUtil {
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i]);
             System.out.print(" ");
-            if (num * 2 - 2 == i){
+            if (num * 2 - 2 == i) {
                 System.out.println();
                 num = num * 2;
             }
         }
+        System.out.println();
+    }
+
+    public static void printTree(int[] array, int length) {
+        if (array == null) {
+            System.out.println("null");
+            return;
+        }
+        int num = 1;
+        for (int i = 0; i < length; i++) {
+            System.out.print(array[i]);
+            System.out.print(" ");
+            if (num * 2 - 2 == i) {
+                System.out.println();
+                num = num * 2;
+            }
+        }
+        System.out.println();
     }
 
     public static void exchange(int[] array, int i, int j) {

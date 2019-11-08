@@ -10,23 +10,28 @@ public class HeapPractice {
 
     public static void main(String[] args) {
         HeapPractice heapPractice = new HeapPractice();
-//        int[][] arrays = {{1, 3, 4, 6, 7, 8, 15}
-//                , {2, 5, 6, 7, 9, 10, 23}
-//                , {0, 2, 5, 7, 9, 11, 14, 23, 27}
-//                , {2, 3, 4, 5, 6, 7, 8, 10}};
-//        heapPractice.mergeSmallFile(arrays);
-//        int[] timers = {6, 4, 1, 13, 30, 23, 8, 15, 27};
-//        highPerformanceTimer(timers);
+        int[][] arrays = {{1, 3, 4, 6, 7, 8, 15}
+                , {2, 5, 6, 7, 9, 10, 23}
+                , {0, 2, 5, 7, 9, 11, 14, 23, 27}
+                , {2, 3, 4, 5, 6, 7, 8, 10}};
+        heapPractice.mergeSmallFile(arrays);
+        int[] timers = {6, 4, 1, 13, 30, 23, 8, 15, 27};
+        highPerformanceTimer(timers);
         int[] dataFlow = new int[10000];
         Random random = new Random(1);
         for (int i = 0; i < 10000; i++) {
             dataFlow[i] = random.nextInt(10000);
+            System.out.print(dataFlow[i] + " ");
         }
-//        int[] topK = topK(dataFlow, 10);
-//        PracticeUtil.printArray(topK);
-        middleNumInStream(dataFlow);
+        System.out.println();
+        int[] topK = topK(dataFlow, 10);
+        PracticeUtil.printArray(topK);
+        Integer num = heapPractice.middleNumInStream(dataFlow, 0.5);
+        System.out.println(num);
         heapSort(dataFlow);
         PracticeUtil.printTree(dataFlow);
+        SortPractice.quickSort(dataFlow);
+        PracticeUtil.printArray(dataFlow);
     }
 
     private class SmallFileNode {
@@ -106,7 +111,7 @@ public class HeapPractice {
             length--;
             if (length > 0) {
                 timers[0] = timers[length];
-                topToDown(timers, length);
+                smallTopToDown(timers, length);
             } else {
                 break;
             }
@@ -123,16 +128,57 @@ public class HeapPractice {
         }
         buildHeap(topK);
         for (int i = k; i < dataFlow.length; i++) {
-            if(dataFlow[i] > topK[0]){
+            if (dataFlow[i] > topK[0]) {
                 topK[0] = dataFlow[i];
-                topToDown(topK,k);
+                smallTopToDown(topK, k);
             }
         }
         return topK;
     }
 
-    public static void middleNumInStream(int[] dataFlow) {
-
+    public Integer middleNumInStream(int[] dataFlow, double rate) {
+        if (dataFlow == null || dataFlow.length < 1 || dataFlow.length * rate < 1 || rate > 1) {
+            return null;
+        }
+        if (dataFlow.length == 1 || dataFlow.length * rate == 1) {
+            return dataFlow[0];
+        }
+        int[] left = new int[dataFlow.length];
+        int[] right = new int[dataFlow.length];
+        left[0] = dataFlow[0];
+        right[0] = dataFlow[1];
+        int leftLength = 1;
+        int rightLength = 1;
+        for (int i = 2; i < dataFlow.length; i++) {
+            if (dataFlow[i] > left[0]) {
+                right[rightLength] = dataFlow[i];
+                smallDownToTop(right, rightLength);
+                rightLength++;
+            } else {
+                left[leftLength] = dataFlow[i];
+                bigDownToTop(left, leftLength);
+                leftLength++;
+            }
+            while ((leftLength + rightLength) * rate < leftLength) {
+                right[rightLength] = left[0];
+                left[0] = left[leftLength - 1];
+                leftLength--;
+                bigTopToDown(left, leftLength);
+                smallDownToTop(right, rightLength);
+                rightLength++;
+            }
+            while ((leftLength + rightLength) * rate > leftLength) {
+                left[leftLength] = right[0];
+                right[0] = right[rightLength - 1];
+                rightLength--;
+                smallTopToDown(right, rightLength);
+                bigDownToTop(left, leftLength);
+                leftLength++;
+            }
+        }
+//        PracticeUtil.printTree(left,leftLength);
+//        PracticeUtil.printTree(right,rightLength);
+        return right[0];
     }
 
     public static int[] heapSort(int[] array) {
@@ -180,13 +226,13 @@ public class HeapPractice {
         for (int i = 0; i < array.length; i++) {
             newArray[i] = array[0];
             array[0] = array[length];
+            smallTopToDown(array, length);
             length--;
-            topToDown(array, array.length);
         }
         return newArray;
     }
 
-    private static void topToDown(int[] array, int length) {
+    private static void smallTopToDown(int[] array, int length) {
         if (array == null || length <= 1) {
             return;
         }
@@ -212,6 +258,73 @@ public class HeapPractice {
             array[curIndex] = array[min];
             array[min] = temp;
             curIndex = min;
+        }
+    }
+
+    private static void bigTopToDown(int[] array, int length) {
+        if (array == null || length <= 1) {
+            return;
+        }
+        int left = 0;
+        int right = 0;
+        int curIndex = 0;
+        int max = 0;
+        int temp = 0;
+        while (left < length) {
+            left = curIndex * 2 + 1;
+            right = curIndex * 2 + 2;
+            max = curIndex;
+            if (left < length && array[left] > array[curIndex]) {
+                max = left;
+            }
+            if (right < length && array[right] > array[max]) {
+                max = right;
+            }
+            if (max == curIndex) {
+                break;
+            }
+            temp = array[curIndex];
+            array[curIndex] = array[max];
+            array[max] = temp;
+            curIndex = max;
+        }
+    }
+
+    private static void smallDownToTop(int[] array, int index) {
+        if (array == null || array.length < 1 || array.length <= index) {
+            return;
+        }
+        int father = (index - 1) / 2;
+        int temp;
+        while (true) {
+            if (array[index] < array[father]) {
+                temp = array[index];
+                array[index] = array[father];
+                array[father] = temp;
+                index = father;
+                father = (father - 1) / 2;
+            } else {
+                return;
+            }
+        }
+    }
+
+    private static void bigDownToTop(int[] array, int index) {
+        if (array == null || array.length < 1 || array.length <= index) {
+            return;
+        }
+        int father = (index - 1) / 2;
+        int temp;
+        while (true) {
+            if (array[index] > array[father]) {
+                temp = array[index];
+                array[index] = array[father];
+                array[father] = temp;
+                index = father;
+                father = (father - 1) / 2;
+            } else {
+                return;
+            }
         }
     }
 
