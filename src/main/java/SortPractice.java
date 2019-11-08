@@ -33,15 +33,15 @@ public class SortPractice {
         quickSort(e);
         long end5 = System.currentTimeMillis();
         System.out.println(end - start);
-        printArray(a);
+        PracticeUtil.printArray(a);
         System.out.println(end2 - end);
-        printArray(b);
+        PracticeUtil.printArray(b);
         System.out.println(end3 - end2);
-        printArray(c);
+        PracticeUtil.printArray(c);
         System.out.println(end4 - end3);
-        printArray(d);
+        PracticeUtil.printArray(d);
         System.out.println(end5 - end4);
-        printArray(e);
+        PracticeUtil.printArray(e);
     }
 
     public static void quickSort(int[] array) {
@@ -188,18 +188,6 @@ public class SortPractice {
             }
             array[j + 1] = temp;
         }
-    }
-
-    public static void printArray(int[] array) {
-        if (array == null) {
-            System.out.println("null");
-            return;
-        }
-        for (int a : array) {
-            System.out.print(a);
-            System.out.print(" ");
-        }
-        System.out.println();
     }
 
 }
