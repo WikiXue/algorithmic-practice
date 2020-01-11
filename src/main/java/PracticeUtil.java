@@ -6,6 +6,22 @@
  **/
 public class PracticeUtil {
 
+    public static void printArrayWithDir(int[] array,int dir){
+        if (array == null) {
+            System.out.println("null");
+            return;
+        }
+        if(dir == -1){
+            for(int i = array.length - 1;i >= 0;i--){
+                System.out.print(array[i]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }else{
+            printArray(array);
+        }
+    }
+
     public static void printArray(int[] array) {
         if (array == null) {
             System.out.println("null");
